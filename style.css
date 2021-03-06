@@ -1,0 +1,150 @@
+html,
+body {
+    max-height: 100%;
+    overflow-y: hidden;
+}
+
+body {
+    background-color: #1F1E33;
+    font-family: "Lucida Sans Typewriter", "Fira Code", monospace;
+}
+
+#form {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    color: #EFF;
+}
+
+#caption {
+    font-style: normal;
+    text-align: center;
+}
+
+input,
+button {
+    font-family: "Lucida Sans Typewriter", "Fira Code", monospace;
+}
+
+button {
+    border: none;
+    background-color: #FEF;
+    padding: 10px;
+}
+
+button:hover {
+    background-color: #28B5D4;
+}
+
+table {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    font-size: 16px;
+    text-align: center;
+    background: #1F1E33;
+    color: #EFF;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+}
+
+.space {
+    width: 30px;
+}
+
+.rail {
+    width: 8px;
+    height: 80%;
+    border-right: 1px solid #FFF;
+    border-left: 1px solid #FFF;
+}
+
+.key {
+    /* the color of this is set in js */
+    height: 30px;
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
+    border-right: 1px solid #FFF;
+    border-left: 1px solid #FFF;
+}
+
+.miss {
+    height: auto;
+}
+
+@keyframes broken {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+
+div.test {
+    position: absolute;
+    border: 1px solid #777;
+    box-sizing: border-box;
+    background: #EA8;
+}
+
+div.note {
+    position: absolute;
+    background: #FFF;
+}
+
+div.hold {
+    transition: background 0.06s;
+    position: absolute;
+    background: #99D9EA;
+}
+
+div.held {
+    position: absolute;
+    background: #28A5C4;
+}
+
+div.great {
+    position: absolute;
+    background: #fccf55;
+}
+
+div.broken {
+    animation: broken 0.2s;
+    animation-fill-mode: forwards;
+    position: absolute;
+    background: #A24;
+}
+
+div.missed {
+    position: absolute;
+    background-color: #777;
+}
+
+.scoremargin {
+  height: 35%;
+}
+
+.score {
+  position: absolute;
+  top: 10;
+  left: 10;
+  color: #EEF;
+  font-size: 36px;
+}
+
+.stats {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 10%;
+  z-index: 1;
+  color: #218;
+  text-align: center;
+  text-shadow: #FFF 1px 0 0, #FFF 0 1px 0, #FFF -1px 0 0, #FFF 0 -1px 0;
+  font-weight: bold;
+}
+
+small {
+  color: #FFF;
+  text-shadow: #000 1px 0 0, #000 0 1px 0, #000 -1px 0 0, #000 0 -1px 0;
+}

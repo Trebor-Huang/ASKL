@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+    <div id="form">
+        <form action="" method="" id="start">
+            <h1 id="caption">Choose file</h1>
+            <p>
+                Currently only Malody (<code>*.mc</code>) files are accepted. You can directly drag and drop files.
+            </p>
+            <p>
+                <label>Select chart: <input type="file" id="chart" /></label>
+            </p>
+            <p>
+                <label>Select music: <input type="file" id="music" /></label>
+            </p>
+            <p>
+                Music speed: <input type="number" min="0.5" max="3.0" step="0.1" id="speed" value="1.0"/>
+            </p>
+            <p>
+                Chart speed: <input type="number" min="0.1" max="1.5" step="0.1" id="chartspeed" value="1.0"/>
+            </p>
+            <button onclick="onPlayButtonClicked(event);">Play!</button>
+        </form>
+    </div>
+
+    <table>
+        <tbody id="main" display="none" />
+    </table>
+
+    <script type="text/javascript" src="logic.js">
+    </script>
+</body>
+
+</html>
