@@ -3,6 +3,8 @@ A simple HTML player for 4K Malody charts.
 
 ## Usage
 
+Download `main.htm`, `logic.js` and `style.css` and put them in a folder.
+
 - Simply open `main.htm` in your favourite browser (I've only tested this on Chrome and Safari).
 - Drag and drop the chart (`*.mc` file) and music (probably `*.ogg`, but for other formats that your browser.
 supports, you can also use the upload button).
