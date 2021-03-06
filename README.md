@@ -24,6 +24,8 @@ You can fiddle with the appearance in `style.css`.
 
 Supports bpm changes and effects. The scoring system is slightly different.
 
+Press space to pause/unpause; press \` (the tilde key on the topleft) to retry. If you want to start a new song, refresh.
+
 ## Other versions
 
 The other folders contain old versions I've made along the way.
