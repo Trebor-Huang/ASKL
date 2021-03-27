@@ -15,13 +15,18 @@
                 <label>Select chart: <input type="file" id="chart" /></label>
             </p>
             <p>
-                <label>Select music: <input type="file" id="music" /></label>
+                <label>Select music: <input type="file" id="music" /></label> <small>(Optional)</small>
             </p>
             <p>
-                Music speed: <input type="number" min="0.5" max="3.0" step="0.1" id="speed" value="1.0"/>
+                Music speed: <small style="color: gray">x</small><input type="number" min="0.5" max="3.0" step="0.1" id="speed" value="1.0"/>
             </p>
             <p>
                 Chart speed: <input type="number" min="0.1" max="1.5" step="0.1" id="chartspeed" value="1.0"/>
+                <small> pixel per millisecond </small>
+            </p>
+            <p>
+                Offset: <input type="number" min="-1000" max="1000" step="10" id="offset" value="0" />
+                <small> ms <br> (The larger the offset, the earlier the music.)</small>
             </p>
             <button onclick="onPlayButtonClicked(event);">Play!</button>
         </form>
