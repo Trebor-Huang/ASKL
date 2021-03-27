@@ -281,6 +281,7 @@ function readMalody(json_raw) {
         alert("Unsupported format.");
         return false;
     }
+    console.log(rawChart);
     metaInfo = rawChart["meta"];
     if (metaInfo["mode"] != 0 ||
         ("mode_ext" in metaInfo &&
@@ -313,7 +314,7 @@ function readMalody(json_raw) {
     songData = notesRaw.pop();
     chart = new Array();
 
-    var offset = songData["offset"] + calcTime(speed, ...songData["beat"]);
+    var offset = (songData?.["offset"] ?? 0) + calcTime(speed, ...songData["beat"]);
     for (n of notesRaw) {
         if ("endbeat" in n) {
             chart.push([1, n["column"], -offset + calcTime(speed, ...n["beat"]), -offset + calcTime(speed, ...n["endbeat"])])
