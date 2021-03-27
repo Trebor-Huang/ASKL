@@ -62,8 +62,6 @@ table {
 }
 
 .key {
-    /* the color of this is set in js */
-    height: 30px;
     border-top: 1px solid #FFF;
     border-bottom: 1px solid #FFF;
     border-right: 1px solid #FFF;
@@ -72,6 +70,8 @@ table {
 
 .miss {
     height: auto;
+    text-align: center;
+    z-index: 1;
 }
 
 @keyframes broken {
