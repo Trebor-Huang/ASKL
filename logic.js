@@ -8,11 +8,11 @@ playSpeed = 1;
 
 const logicIntervalLength = 1000 / 60; // equal to 1000 / fps
 
-timeOffset = 20; // the larger the offset is (in milliseconds), the earlier the music appears
+timeOffset = 0; // the larger the offset is (in milliseconds), the earlier the music appears
 // Layout
 
 chartSpeed = 1.0; // pixel per ms
-const keyHeight = 26; // todo hardwired in CSS
+const keyHeight = 26;
 
 // Colors
 
@@ -124,6 +124,7 @@ function buildPlay() {
     for (var i = 0; i < 4; i += 1) {
         keys[i] = document.createElement("td");
         keys[i].className = "key";
+        keys[i].setAttribute("height", keyHeight);
         keyRow.appendChild(keys[i]);
     }
     for (var [e, i] of keyrail.entries()) {
@@ -131,8 +132,12 @@ function buildPlay() {
     }
 
     missRow = document.createElement("tr");
+    missCell = document.createElement("td")
     missRow.className = "miss";
+    missCell.setAttribute("colSpan", 4);
+    missCell.innerHTML = "Press Space to unpause <br> Press ` to restart <br> <small>If the notes suddenly jerks forward and then back on start, restart to fix</small>";
     tbl.appendChild(missRow);
+    missRow.appendChild(missCell);
 
     // UL corner: score
     // center: combo, acc, results
@@ -150,13 +155,15 @@ function buildPlay() {
     if (musicFile != null) {
         musicPlayer = document.createElement("audio");
         musicPlayer.src = URL.createObjectURL(musicFile);
-        // todo remember to revoke url
     }
     playSpeed = parseFloat(document.getElementById("speed").value);
     playSpeed = isNaN(playSpeed) ? 1.0 : playSpeed;
 
     chartSpeed = parseFloat(document.getElementById("chartspeed").value);
     chartSpeed = isNaN(chartSpeed) ? 1.0 / playSpeed : chartSpeed / playSpeed;
+
+    timeOffset = parseInt(document.getElementById("offset").value) ?? 0;
+    timeOffset = isNaN(timeOffset) ? 0 : timeOffset;
     state = "play";
 }
 
@@ -238,7 +245,7 @@ function* calcTimeNode(speedInfo, effectInfo) {
     for (var [b0, bpm] of speedInfo) {
         t0 += 60000 / bpmLast * (b0[0] + b0[1] / b0[2] - b0Last[0] - b0Last[1] / b0Last[2]);
     }
-    while (effectInfo.length > 0 && effectInfo[0]["beat"] < b0) {
+    while (effectInfo.length > 0 && (effectInfo[0]["beat"][0] + effectInfo[0]["beat"][1] / effectInfo[0]["beat"][2]) <= (b0[0] + b0[1] / b0[2])) {
         yield [calcTime(speedInfo, ...effectInfo[0]["beat"]), bpmLast, effectInfo[0]["scroll"] * (1 + bpmLast / bpmInit) / 2];
         effectInfo.shift();
     }
@@ -259,7 +266,7 @@ function calcTime(speed, beat, subbeat, division) {
     var dbeat;
     for (var [b0, bpm] of speed) {
         dbeat = beat + (subbeat / division) - (b0[0] + b0[1] / b0[2])
-        if (dbeat <= 0) {
+        if (dbeat < 0) {
             return t0 + 60000 / bpmLast * dbeatLast;
         }
         t0 += 60000 / bpmLast * (b0[0] + b0[1] / b0[2] - b0Last[0] - b0Last[1] / b0Last[2])
@@ -281,7 +288,6 @@ function readMalody(json_raw) {
         alert("Unsupported format.");
         return false;
     }
-    console.log(rawChart);
     metaInfo = rawChart["meta"];
     if (metaInfo["mode"] != 0 ||
         ("mode_ext" in metaInfo &&
@@ -346,7 +352,7 @@ function calculateChart() {
 
 function calculatePosition(tpos) {
     // return chartSpeed * tpos  // const
-    var i = speed.length - 2;
+    var i = speed.length - 1;
     for (; i > 0; i -= 1) {
         if (tpos > speed[i][0]) {
             return chartSpeed * (tpos - speed[i][0]) * speed[i][2] + speed[i][1];
@@ -494,6 +500,7 @@ function onPlayButtonClicked(e) {
 function logicInit() {
     buildChart();
     paused = true;
+    pauseTpos = 0;
     totalKeys = chart.length;
     maxTime = Math.max(...chart.map((c) => c[c.length - 1])) + 1000;
     score = 0.;
@@ -509,13 +516,16 @@ function logicInit() {
         syncIntervalId = setInterval(sync, 100);
         sync();
     } else {
-        t0 = performance.now() + timeOffset;
+        sync(true, pauseTpos);
     }
     logicIntervalId = setInterval(logic, logicIntervalLength);
 
 }
 
-function sync(hard = false) {
+function sync(hard = false, tposs = null) {
+    if (tposs != null) {
+        t0 = performance.now() - tposs + timeOffset;
+    }
     if (musicFile != null) {
         var t1 = performance.now() - musicPlayer.currentTime * 1000 / playSpeed + timeOffset;
         if (hard) {
@@ -535,7 +545,7 @@ function logic() {
     }
     tpos = (performance.now() - t0) * playSpeed;
     var camera = calculatePosition(tpos);
-    if (musicPlayer.ended) {
+    if (musicPlayer?.ended ?? tpos > maxTime) {
         buildSummary();
     }
     for (var i = 0; i < chart.length; i += 1) {
@@ -603,12 +613,21 @@ async function kd(e) {
         paused = !paused;
         if (musicFile != null) {
             if (paused) {
+                pauseTpos = tpos;
                 await musicPlayer.pause();
             } else {
+                sync(true, pauseTpos);
                 await musicPlayer.play();
             }
             sync(true);
+        } else {
+            if (paused) {
+                pauseTpos = tpos;
+            } else {
+                sync(true, pauseTpos);
+            }
         }
+        missCell.innerHTML = paused ? "Press Space to unpause" : "";
         return true;
     }
     if (paused) {
